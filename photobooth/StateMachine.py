@@ -310,7 +310,11 @@ class TeardownState(State):
                 context.state = WelcomeState()
             else:
                 raise ValueError('Unknown GuiEvent "{}"'.format(event.name))
-        else:
+		elif isinstance(event, GpioEvent) and event.name == 'exit':
+				context.state = StartupState()
+		elif isinstance(event, GpioEvent) and event.name == 'trigger':
+				context.state = StartupState()
+		else:
             raise TypeError('Unknown Event type "{}"'.format(event))
 
 
@@ -327,7 +331,12 @@ class WelcomeState(State):
                 context.state = StartupState()
             elif event.name == 'exit':
                 context.state = TeardownState(TeardownEvent.EXIT)
-        else:
+        elif isinstance(event, GpioEvent):
+			if event.name == 'trigger':
+				context.state = StartupState()
+			elif event.name == 'exit':
+				context.state = StartupState()
+		else:
             raise TypeError('Unknown Event type "{}"'.format(event))
 
 
@@ -342,7 +351,9 @@ class StartupState(State):
         if isinstance(event, CameraEvent) and event.name == 'ready':
             context.is_running = True
             context.state = IdleState()
-        else:
+        elif isinstance(event, GpioEvent) and event.name == 'exit':
+				context.state = StartupState()
+		else:
             raise TypeError('Unknown Event type "{}"'.format(event))
 
 
@@ -357,6 +368,8 @@ class IdleState(State):
         if ((isinstance(event, GuiEvent) or isinstance(event, GpioEvent)) and
            event.name == 'trigger'):
             context.state = GreeterState()
+		elif isinstance(event, GpioEvent) and event.name == 'exit':
+			context.state = StartupState()
         else:
             raise TypeError('Unknown Event type "{}"'.format(event))
 
