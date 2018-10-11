@@ -68,3 +68,4 @@ If you find this application useful, please consider [buying me a coffee](https:
 
 ## License
 I provide this code under AGPL v3. See [LICENSE](https://github.com/reuterbal/photobooth/blob/master/LICENSE.txt).
+"#photobooth" 
